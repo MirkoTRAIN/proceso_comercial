@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de control de acceso y aforo · Trainingym</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #ED6845;
+      --orange-light: rgba(237,104,69,0.10);
+      --orange-mid: #c9512e;
+      --orange-dark: #8f3318;
+      --petrol: #293138;
+      --petrol-light: rgba(41,49,56,0.08);
+      --grafito: #1D1D1B;
+      --gris: #F2F3F7;
+      --gris-mid: #e4e5ea;
+      --bg: #F2F3F7;
+      --surface: #ffffff;
+      --surface2: #eaebed;
+      --border: rgba(0,0,0,0.09);
+      --border-mid: rgba(0,0,0,0.16);
+      --text: #1D1D1B;
+      --text-muted: #5a5f65;
+      --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
+    }
+    html, body { height: 100%; }
+    body { font-family: 'Host Grotesk', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── HEADER ── */
+    .topbar {
+      background: var(--petrol);
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex; align-items: center; gap: 1rem;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .top-av {
+      width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .top-av svg { width: 100%; height: 100%; display: block; }
+    .top-name { font-size: 16px; font-weight: 600; line-height: 1.2; }
+    .top-sub { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+
+    .hero { margin-bottom: 1.5rem; }
+    .hero-title { font-size: 28px; font-weight: 800; letter-spacing: -.01em; }
+    .hero-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+    .info {
+      background: var(--orange-light);
+      border-left: 3px solid var(--orange);
+      padding: .875rem 1.125rem;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── NAV PILLS ── */
+    .pill-nav {
+      display: flex; gap: .5rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding: .625rem; background: var(--surface);
+      border-radius: var(--radius-md); border: 0.5px solid var(--border);
+    }
+    .pill-link {
+      padding: 7px 13px; font-size: 12px; font-weight: 600;
+      text-decoration: none; color: var(--text-muted);
+      border-radius: var(--radius-md); transition: all .15s;
+      border: 1px solid transparent;
+    }
+    .pill-link:hover { background: var(--surface2); color: var(--text); }
+
+    .block-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--text-muted);
+      margin-bottom: .75rem;
+    }
+    .section-block { margin-bottom: 2rem; scroll-margin-top: 100px; }
+    .section-block h2 {
+      font-size: 20px; font-weight: 700; margin-bottom: 1rem;
+      padding-bottom: .5rem; border-bottom: 2px solid var(--orange);
+      display: inline-block;
+    }
+
+    /* ── CATÁLOGO ── */
+    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 900px) { .cat-grid { grid-template-columns: 1fr; } }
+    .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; display: grid; grid-template-columns: 200px 1fr; }
+    .cat-card.compact { grid-template-columns: 1fr; }
+    .cat-photo { background: linear-gradient(135deg, #f1f2f6 0%, #e2e3eb 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 1rem; min-height: 200px; border-right: 1px solid var(--border); }
+    .cat-photo-wrap { width: 100%; max-width: 160px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 10px rgba(0,0,0,.08)); }
+    .cat-photo img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+    .cat-zoom-btn { background: var(--petrol); color: #fff; border: none; border-radius: var(--radius-md); padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-family: 'Host Grotesk', system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; transition: all .15s; }
+    .cat-zoom-btn:hover { background: var(--orange); }
+    .cat-zoom-btn svg { width: 12px; height: 12px; }
+    .cat-body { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: .5rem; }
+    .cat-badges { display: flex; gap: 5px; flex-wrap: wrap; }
+    .cat-badge { font-size: 9.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; }
+    .cat-badge-cat { background: var(--orange-light); color: var(--orange-dark); border: 0.5px solid rgba(237,104,69,.3); }
+    .cat-badge-sku { background: var(--surface2); color: var(--text-muted); font-family: monospace; }
+    .cat-badge-premium { background: #1D2B45; color: #fff; }
+    .cat-badge-amp { background: var(--petrol); color: #fff; }
+    .cat-title { font-size: 15.5px; font-weight: 700; line-height: 1.25; margin-top: 2px; }
+    .cat-subtitle { font-size: 11.5px; color: var(--text-muted); font-style: italic; margin-top: 1px; }
+    .cat-desc { font-size: 12.5px; color: var(--text); line-height: 1.6; }
+    .cat-req { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; background: #FEF6E7; border: 0.5px solid #F5C04A; border-left: 2px solid #F5C04A; border-radius: var(--radius-md); font-size: 11px; color: #7A5614; line-height: 1.5; }
+    .cat-foot { display: flex; align-items: center; gap: .75rem; padding-top: .625rem; border-top: 0.5px solid var(--border); flex-wrap: wrap; margin-top: auto; }
+    .cat-price-wrap { display: flex; flex-direction: column; gap: 1px; }
+    .cat-price { font-size: 18px; font-weight: 800; color: var(--orange); line-height: 1; }
+    .cat-price-iva { font-size: 9.5px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+    .cat-mod { background: var(--orange); color: #fff; padding: 2px 7px; border-radius: 3px; font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-left: auto; }
+
+    /* ── LIGHTBOX ── */
+    .cat-lb { position: fixed; inset: 0; background: rgba(15,18,22,.92); display: none; align-items: center; justify-content: center; z-index: 999; padding: 2rem; backdrop-filter: blur(6px); }
+    .cat-lb.open { display: flex; }
+    .cat-lb-inner { background: #fff; border-radius: var(--radius-lg); width: 100%; max-width: 1080px; max-height: 92vh; overflow: auto; position: relative; }
+    .cat-lb-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; border: 0.5px solid var(--border-mid); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text-muted); z-index: 5; }
+    .cat-lb-close:hover { background: var(--surface2); color: var(--text); }
+    .cat-lb-header { padding: 1.25rem 1.5rem 1rem; border-bottom: 0.5px solid var(--border); }
+    .cat-lb-title { font-size: 18px; font-weight: 700; line-height: 1.2; padding-right: 3rem; }
+    .cat-lb-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+    .cat-lb-body { display: grid; grid-template-columns: 1fr 360px; gap: 0; }
+    .cat-stage { background: linear-gradient(135deg, #fafbfd 0%, #ebedf2 100%); padding: 1.5rem; display: flex; align-items: center; justify-content: center; min-height: 600px; }
+    .cat-stage-img { width: 100%; height: 100%; min-height: 540px; max-height: 78vh; object-fit: contain; mix-blend-mode: multiply; }
+    .cat-stage-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+    .cat-stage-imgs img { width: 100%; height: 100%; min-height: 420px; max-height: 65vh; object-fit: contain; mix-blend-mode: multiply; }
+    .cat-lb-panel { background: var(--surface); border-left: 0.5px solid var(--border); padding: 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-height: 92vh; overflow-y: auto; }
+    .cat-lb-panel-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+    .cat-dim-list { display: flex; flex-direction: column; gap: .375rem; }
+    .cat-dim-row { display: flex; flex-direction: column; gap: 2px; padding: 8px 11px; background: var(--surface2); border-radius: var(--radius-md); }
+    .cat-dim-row strong { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); line-height: 1.3; }
+    .cat-dim-row span { font-size: 13px; font-weight: 600; color: var(--orange); white-space: normal; line-height: 1.4; word-break: break-word; }
+    .cat-lb-legend { font-size: 11.5px; color: var(--text-muted); padding-top: 1rem; border-top: 0.5px solid var(--border); line-height: 1.55; }
+
+    /* ── LISTA COMPACTA ── */
+    .cat-list { display: flex; flex-direction: column; gap: .5rem; }
+    .cat-list-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: .75rem 1rem; display: flex; align-items: center; gap: .875rem; flex-wrap: wrap; }
+    .cat-list-icon { width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--orange-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--orange-dark); font-size: 14px; }
+    .cat-list-body { flex: 1; min-width: 200px; }
+    .cat-list-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+    .cat-list-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; line-height: 1.4; }
+    .cat-list-meta { display: flex; align-items: center; gap: .625rem; font-size: 11px; }
+    .cat-list-sku { font-family: monospace; color: var(--text-muted); }
+    .cat-list-price { font-weight: 700; color: var(--orange); font-size: 14px; }
+    .cat-list-mod { background: var(--surface2); color: var(--text-muted); padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+
+    @media (max-width: 760px) {
+      .container { padding: 1rem; }
+      .topbar { padding: .875rem 1rem; }
+      .cat-card { grid-template-columns: 1fr; }
+      .cat-photo { border-right: none; border-bottom: 0.5px solid var(--border); }
+      .cat-lb-body { grid-template-columns: 1fr; }
+      .cat-lb-panel { border-left: none; border-top: 0.5px solid var(--border); }
+      .cat-stage-imgs { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="top-av" aria-label="Trainingym">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <!-- Anillo abierto en la esquina superior izquierda -->
+        <path d="M 54 14 A 36 36 0 1 1 16 38"
+              stroke="#ED6845" stroke-width="14" stroke-linecap="round"/>
+        <!-- Círculo pequeño dentro de la apertura -->
+        <circle cx="28" cy="38" r="5.5"
+                stroke="#ED6845" stroke-width="3.2"/>
+      </svg>
+    </div>
+    <div>
+      <div class="top-name">Catálogo de control de acceso y aforo</div>
+      <div class="top-sub">Trainingym · tornos, portillos, cerraduras y lectores</div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- NAVEGACIÓN INTERNA -->
+    <nav class="pill-nav">
+      <a href="#entrada" class="pill-link">Gama de entrada</a>
+      <a href="#media" class="pill-link">Gama media</a>
+      <a href="#premium" class="pill-link">Gama premium</a>
+      <a href="#desatendido" class="pill-link">Gama 24/7</a>
+      <a href="#portillos" class="pill-link">Portillos</a>
+      <a href="#cerraduras" class="pill-link">Cerraduras</a>
+      <a href="#accesorios" class="pill-link">Accesorios</a>
+      <a href="#lectores" class="pill-link">Lectores</a>
+      <a href="#soportes" class="pill-link">Soportes ID</a>
+    </nav>
+
+    <!-- ENTRADA -->
+    <section id="entrada" class="section-block">
+      <h2>Tornos · gama de entrada</h2>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/MTS1000%20con%20LEDs.webp" alt="MTS1000"></div>
+            <button class="cat-zoom-btn" onclick="catLb('mts1000')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Tornos</span><span class="cat-badge cat-badge-sku">70001311</span></div>
+            <div class="cat-title">MTS1000 con LEDs</div>
+            <div class="cat-subtitle">Torno de aspas giratorias · gama de entrada</div>
+            <div class="cat-desc">Solución estándar de control de acceso, mejor relación calidad-precio. Torniquete bidireccional con tres aspas y pictogramas LED. Acero inox SUS304, 25 personas/min, 2 M ciclos.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">1.330 €</span><span class="cat-price-iva">+ IVA España · ≈ 1.560 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- MEDIA -->
+    <section id="media" class="section-block">
+      <h2>Tornos · gama media</h2>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/Mars%20Pro-S1000%20(carril%20simple).webp" alt="Mars Pro-S1000"></div>
+            <button class="cat-zoom-btn" onclick="catLb('mars-s1000')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Tornos</span><span class="cat-badge cat-badge-sku">70001319-1</span></div>
+            <div class="cat-title">Mars Pro-S1000 (carril simple)</div>
+            <div class="cat-subtitle">Torno de pasillo · gama media · entrada elegante</div>
+            <div class="cat-desc">Torno de pasillo con barreras retráctiles silenciosas accionadas por servomotor. 60 personas/min, 10 M ciclos. Imagen cuidada para la recepción sin saltar al precio premium.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">3.300 €</span><span class="cat-price-iva">+ IVA España · ≈ 3.860 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/Mars%20Pro-1200%20%C2%B7%20ampliaci%C3%B3n.png" alt="Mars Pro-1200"></div>
+            <button class="cat-zoom-btn" onclick="catLb('mars-1200')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Tornos</span><span class="cat-badge cat-badge-amp">Ampliación</span><span class="cat-badge cat-badge-sku">70001319-2</span></div>
+            <div class="cat-title">Mars Pro-1200 · ampliación</div>
+            <div class="cat-subtitle">Módulo intermedio · suma un carril al S1000</div>
+            <div class="cat-req">⚠️ <span><strong>Requiere unidad base Mars Pro-S1000.</strong> Cada Mars Pro-1200 añade un carril extra.</span></div>
+            <div class="cat-desc">Columna intermedia que se acopla al S1000 para duplicar capacidad. Mismo motor, sensores y vida útil. Apilable: con varias se crean 3, 4 o más pasillos en línea.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">2.700 €</span><span class="cat-price-iva">+ IVA España · ≈ 3.160 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- PREMIUM -->
+    <section id="premium" class="section-block">
+      <h2>Tornos · gama premium</h2>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/Comet%20S1000%20(carril%20simple).png" alt="Comet S1000"></div>
+            <button class="cat-zoom-btn" onclick="catLb('comet-s1000')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Tornos</span><span class="cat-badge cat-badge-premium">Premium</span><span class="cat-badge cat-badge-sku">70001318-1</span></div>
+            <div class="cat-title">Comet S1000 (carril simple)</div>
+            <div class="cat-subtitle">Premium · paso PMR 900 mm · aluminio + cristal templado</div>
+            <div class="cat-desc">Torno top de gama en aleación de aluminio con tapas de cristal templado, motor brushless silencioso e indicador LED personalizable. Paso 900 mm apto PMR de serie.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">5.199 €</span><span class="cat-price-iva">+ IVA España · ≈ 6.080 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/Comet%20S1200%20%C2%B7%20ampliaci%C3%B3n.webp" alt="Comet S1200"></div>
+            <button class="cat-zoom-btn" onclick="catLb('comet-s1200')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Tornos</span><span class="cat-badge cat-badge-premium">Premium</span><span class="cat-badge cat-badge-amp">Ampliación</span><span class="cat-badge cat-badge-sku">70001318-2</span></div>
+            <div class="cat-title">Comet S1200 · ampliación</div>
+            <div class="cat-subtitle">Premium · módulo intermedio · suma un carril al Comet S1000</div>
+            <div class="cat-req">⚠️ <span><strong>Requiere unidad base Comet S1000.</strong> Cada Comet S1200 añade un carril extra.</span></div>
+            <div class="cat-desc">Columna premium que se acopla al S1000 manteniendo la imagen de gama alta. Aluminio + cristal templado, motor brushless, LED personalizable.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">3.999 €</span><span class="cat-price-iva">+ IVA España · ≈ 4.680 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- DESATENDIDO -->
+    <section id="desatendido" class="section-block">
+      <h2>Tornos · gama 24/7 desatendido</h2>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/torno-jaula-1.webp" alt="Torno de jaula 1 paso"></div>
+            <button class="cat-zoom-btn" onclick="catLb('jaula-1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Tornos</span><span class="cat-badge cat-badge-sku">70001317-1</span></div>
+            <div class="cat-title">Torno de jaula · 1 paso</div>
+            <div class="cat-subtitle">Full-height · anti-tailgating absoluto · 24/7</div>
+            <div class="cat-desc">Torno full-height en acero inox SUS304 para zonas completamente desatendidas y máxima seguridad. Apto interior/exterior cubierto, IP54, 2 M ciclos. Compatible con lectores RFID, huella, facial y vein.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">6.500 €</span><span class="cat-price-iva">+ IVA España · ≈ 7.610 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/torno-jaula-2.png" alt="Torno de jaula 2 pasos"></div>
+            <button class="cat-zoom-btn" onclick="catLb('jaula-2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Tornos</span><span class="cat-badge cat-badge-sku">70001317-2</span></div>
+            <div class="cat-title">Torno de jaula · 2 pasos</div>
+            <div class="cat-subtitle">Doble full-height · cadenas grandes · alto tráfico 24/7</div>
+            <div class="cat-desc">Versión doble del torno de jaula. Misma garantía anti-intrusión y vida útil, doble capacidad de paso. Ideal para gimnasios 24/7 con afluencia alta y zonas desatendidas.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">12.000 €</span><span class="cat-price-iva">+ IVA España · ≈ 14.040 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- PORTILLOS -->
+    <section id="portillos" class="section-block">
+      <h2>Portillos · acceso PMR / paso amplio</h2>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/foto portillo.webp" alt="Portillo SBT200S-B"></div>
+            <button class="cat-zoom-btn" onclick="catLb('sbt200s')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Portillos</span><span class="cat-badge cat-badge-sku">700001316</span></div>
+            <div class="cat-title">Portillo bidireccional SBT200S-B</div>
+            <div class="cat-subtitle">Swing gate motorizado · 800 mm paso amplio · cristal templado</div>
+            <div class="cat-desc">Portillo motorizado bidireccional con barreras swing de cristal templado. Paso de 800 mm apto PMR, sensor IR, indicador LED, modo de emergencia y compatible con interior o exterior cubierto.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">1.400 €</span><span class="cat-price-iva">+ IVA España · ≈ 1.640 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CERRADURAS -->
+    <section id="cerraduras" class="section-block">
+      <h2>Cerraduras electrónicas</h2>
+      <div class="cat-list">
+        <div class="cat-list-item"><div class="cat-list-icon">🔒</div><div class="cat-list-body"><div class="cat-list-name">Cerradura electrónica</div><div class="cat-list-desc">Bloqueo de puertas con accionamiento electrónico</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000205</span><span class="cat-list-price">50,90 €</span><span class="cat-list-mod">1 vez</span></div></div>
+      </div>
+    </section>
+
+    <!-- ACCESORIOS -->
+    <section id="accesorios" class="section-block">
+      <h2>Accesorios y repuestos</h2>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/foto controladora.webp" alt="Controladora de tornos"></div>
+            <button class="cat-zoom-btn" onclick="catLb('controladora')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Accesorios</span><span class="cat-badge cat-badge-sku">70001304</span></div>
+            <div class="cat-title">Controladora de tornos</div>
+            <div class="cat-subtitle">Unidad de control electrónico para integración de lectores</div>
+            <div class="cat-desc">Controladora que gestiona la electrónica del torno y conecta lectores externos (RFID, QR, biometría) al sistema. Necesaria cuando el lector no incorpora controladora propia (p. ej. QR600).</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">223,95 €</span><span class="cat-price-iva">+ IVA España · ≈ 262 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="cat-list" style="margin-top:1rem">
+        <div class="cat-list-item"><div class="cat-list-icon">🔧</div><div class="cat-list-body"><div class="cat-list-name">Baranda</div><div class="cat-list-desc">Baranda metálica para canalizar el flujo</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70001303</span><span class="cat-list-price">279,90 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">🔧</div><div class="cat-list-body"><div class="cat-list-name">Pulsador salida torno/portillo</div><div class="cat-list-desc">Pulsador de salida libre</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70001301</span><span class="cat-list-price">28,00 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">🔧</div><div class="cat-list-body"><div class="cat-list-name">Pulsador emergencia recepción</div><div class="cat-list-desc">Apertura emergencia desde recepción</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70001301-1</span><span class="cat-list-price">28,00 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">🔧</div><div class="cat-list-body"><div class="cat-list-name">Pulsador emergencia inalámbrico</div><div class="cat-list-desc">Pulsador remoto sin cables</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70001301-2</span><span class="cat-list-price">28,00 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">🔧</div><div class="cat-list-body"><div class="cat-list-name">Tapa torno MTS1000</div><div class="cat-list-desc">Repuesto · tapa superior</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70001321</span><span class="cat-list-price">82,00 €</span><span class="cat-list-mod">1 vez</span></div></div>
+      </div>
+    </section>
+
+    <!-- LECTORES -->
+    <section id="lectores" class="section-block">
+      <h2>Lectores principales</h2>
+      <div class="cat-grid">
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/foto speedface.webp" alt="Lector Face-ID SpeedFace"></div>
+            <button class="cat-zoom-btn" onclick="catLb('faceid')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Lectores</span><span class="cat-badge cat-badge-sku">70000601</span></div>
+            <div class="cat-title">Lector Face-ID</div>
+            <div class="cat-subtitle">Reconocimiento facial multimodal · sin controladora extra</div>
+            <div class="cat-desc">Terminal Linux con pantalla táctil 5", cámara 2MP WDR y verificación 1:N para hasta 6.000 rostros, huella, palma y RFID. TCP/IP + Wi-Fi de serie, distancia de reconocimiento 0,3–3 m e integración nativa con ZKBio.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">696,00 €</span><span class="cat-price-iva">+ IVA España · ≈ 815 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+        <article class="cat-card">
+          <div class="cat-photo">
+            <div class="cat-photo-wrap"><img src="imgs/foto lector qr.webp" alt="Lector RFID y QR QR600"></div>
+            <button class="cat-zoom-btn" onclick="catLb('qr600')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ampliar</button>
+          </div>
+          <div class="cat-body">
+            <div class="cat-badges"><span class="cat-badge cat-badge-cat">Lectores</span><span class="cat-badge cat-badge-sku">70000509</span></div>
+            <div class="cat-title">Lector RFID y QR para torno · QR600</div>
+            <div class="cat-subtitle">Dual RFID + QR dinámico · IP65 · Wiegand y RS485</div>
+            <div class="cat-desc">Lector exterior IP65 en carcasa metálica resistente. Lee QR, PDF417, Data Matrix, MicroPDF417 y Aztec, además de tarjetas 125 kHz / 13.56 MHz. Compatible con QR dinámico vía ZKBioSecurity Mobile APP. Requiere controladora.</div>
+            <div class="cat-foot">
+              <div class="cat-price-wrap"><span class="cat-price">268,90 €</span><span class="cat-price-iva">+ IVA España · ≈ 315 USD</span></div>
+              <span class="cat-mod">Pago único</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="cat-list" style="margin-top:1rem">
+        <div class="cat-list-item"><div class="cat-list-icon">📡</div><div class="cat-list-body"><div class="cat-list-name">Lector RFID Mifare PCR330M-00</div><div class="cat-list-desc">Lector Mifare para tablet/tótem</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000504</span><span class="cat-list-price">89,90 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">📡</div><div class="cat-list-body"><div class="cat-list-name">Lector RFID 125 KHz GIGATEK</div><div class="cat-list-desc">Lector para tablet/tótem (125 KHz)</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000507</span><span class="cat-list-price">89,90 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">📡</div><div class="cat-list-body"><div class="cat-list-name">Lector RFID RD200-M1-G suelto</div><div class="cat-list-desc">Lector independiente sin integración</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000503</span><span class="cat-list-price">89,90 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">📡</div><div class="cat-list-body"><div class="cat-list-name">Lector RFID para grabación</div><div class="cat-list-desc">Para grabar tarjetas RFID y pulseras</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000510-2</span><span class="cat-list-price">89,90 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">👆</div><div class="cat-list-body"><div class="cat-list-name">Lector biometría Nitgen Hamster</div><div class="cat-list-desc">Lector huella dactilar</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000600</span><span class="cat-list-price">99,50 €</span><span class="cat-list-mod">1 vez</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">🪪</div><div class="cat-list-body"><div class="cat-list-name">Soporte lector Face ID</div><div class="cat-list-desc">Soporte específico para Face-ID</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70001306</span><span class="cat-list-price">80,00 €</span><span class="cat-list-mod">1 vez</span></div></div>
+      </div>
+    </section>
+
+    <!-- SOPORTES DE IDENTIFICACIÓN -->
+    <section id="soportes" class="section-block">
+      <h2>Soportes de identificación · pulseras, tarjetas, llaveros</h2>
+      <div class="cat-list">
+        <div class="cat-list-item"><div class="cat-list-icon">🎟️</div><div class="cat-list-body"><div class="cat-list-name">Tarjetas proximidad</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000701</span><span class="cat-list-price">1,00 €</span><span class="cat-list-mod">Unidad</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">⌚</div><div class="cat-list-body"><div class="cat-list-name">Pulsera proximidad silicona ABIERTA</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000700-1</span><span class="cat-list-price">1,50 €</span><span class="cat-list-mod">Unidad</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">⌚</div><div class="cat-list-body"><div class="cat-list-name">Pulsera proximidad silicona CERRADA</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000700-2</span><span class="cat-list-price">1,00 €</span><span class="cat-list-mod">Unidad</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">⌚</div><div class="cat-list-body"><div class="cat-list-name">Pulsera proximidad TELA</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000700-3</span><span class="cat-list-price">0,95 €</span><span class="cat-list-mod">Unidad</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">🔑</div><div class="cat-list-body"><div class="cat-list-name">Llavero de proximidad</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000703</span><span class="cat-list-price">0,90 €</span><span class="cat-list-mod">Unidad</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">📶</div><div class="cat-list-body"><div class="cat-list-name">NFC TAG</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000704</span><span class="cat-list-price">1,00 €</span><span class="cat-list-mod">Unidad</span></div></div>
+        <div class="cat-list-item"><div class="cat-list-icon">🧲</div><div class="cat-list-body"><div class="cat-list-name">Botón cierre pulseras (100 ud)</div></div><div class="cat-list-meta"><span class="cat-list-sku">SKU 70000710</span><span class="cat-list-price">30,00 €</span><span class="cat-list-mod">Lote 100</span></div></div>
+      </div>
+    </section>
+
+  </div><!-- /container -->
+
+  <!-- LIGHTBOX -->
+  <div class="cat-lb" id="cat-lightbox" onclick="catLbBg(event)">
+    <div class="cat-lb-inner" onclick="event.stopPropagation()">
+      <button class="cat-lb-close" onclick="catLbClose()">✕</button>
+      <div class="cat-lb-header">
+        <div class="cat-lb-title" id="cat-lb-title">—</div>
+        <div class="cat-lb-sub" id="cat-lb-sub">Vista ampliada · ficha técnica del producto</div>
+      </div>
+      <div class="cat-lb-body">
+        <div class="cat-stage" id="cat-lb-stage">
+          <img class="cat-stage-img" id="cat-lb-img" src="" alt="">
+        </div>
+        <aside class="cat-lb-panel">
+          <div class="cat-lb-panel-title">Detalles</div>
+          <div class="cat-dim-list" id="cat-lb-dims"></div>
+          <div class="cat-lb-legend" id="cat-lb-legend"></div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const CAT_PRODUCTS = {
+    'mts1000': {
+      title: 'Torniquete bidireccional MTS1000 con LEDs',
+      img: 'imgs/MTS1000%20con%20LEDs.webp',
+      dims: [
+        ['Largo total', '798 mm'],
+        ['Ancho total', '750 mm'],
+        ['Alto', '950 mm'],
+        ['Ancho de paso útil', '478 mm'],
+        ['Footprint en suelo', '138 × 250 mm'],
+        ['Peso', '35 kg']
+      ],
+      legend: 'Dimensiones del datasheet oficial. El paso útil de 478 mm es el espacio real por donde pasa el socio.'
+    },
+    'mars-s1000': {
+      title: 'Torno de pasillo Mars Pro-S1000',
+      img: 'imgs/Mars%20Pro-S1000%20(carril%20simple).webp',
+      dims: [
+        ['Largo total', '1360 mm'],
+        ['Ancho columna', '120 mm'],
+        ['Alto', '1020 mm'],
+        ['Ancho de paso útil', '650 mm'],
+        ['Ancho opcional', '900 mm'],
+        ['Peso neto', '110 kg']
+      ],
+      legend: 'Servomotor silencioso · 60 personas/min · 10 millones de ciclos. Disponible opcionalmente con paso 900 mm para PMR.'
+    },
+    'mars-1200': {
+      title: 'Mars Pro-1200 · ampliación de pasillo',
+      img: 'imgs/Mars%20Pro-1200%20%C2%B7%20ampliaci%C3%B3n.png',
+      dims: [
+        ['Alto', '1020 mm'],
+        ['Ancho columna', '120 mm'],
+        ['Fondo', '1360 mm'],
+        ['Tamaño torno intermedio', '325 mm'],
+        ['Ancho de paso por carril', '325 mm'],
+        ['Línea total con S1000', '650 mm'],
+        ['Peso', '65 kg']
+      ],
+      legend: 'Módulo de ampliación · requiere base Mars Pro-S1000. Cada unidad añade un carril adicional.'
+    },
+    'comet-s1000': {
+      title: 'Torno de pasillo Comet S1000',
+      img: 'imgs/Comet%20S1000%20(carril%20simple).png',
+      dims: [
+        ['Alto', '1000 mm'],
+        ['Ancho columna', '115 mm'],
+        ['Fondo', '1500 mm'],
+        ['Ancho de paso útil', '900 mm · PMR'],
+        ['Peso (cada mueble)', '50 kg']
+      ],
+      legend: 'Premium · aluminio + cristal templado · motor brushless · LED personalizable. Paso 900 mm apto PMR de serie.'
+    },
+    'comet-s1200': {
+      title: 'Comet S1200 · ampliación de pasillo',
+      img: 'imgs/Comet%20S1200%20%C2%B7%20ampliaci%C3%B3n.webp',
+      dims: [
+        ['Alto', '1000 mm'],
+        ['Ancho columna', '115 mm'],
+        ['Fondo', '1500 mm'],
+        ['Tamaño torno intermedio', '450 mm'],
+        ['Ancho de paso por carril', '900 mm · PMR'],
+        ['Línea total con S1000', '900 mm'],
+        ['Peso', '65 kg']
+      ],
+      legend: 'Ampliación premium · requiere base Comet S1000. Mismo material aluminio + cristal templado.'
+    },
+    'jaula-1': {
+      title: 'Torno de jaula full-height · 1 paso',
+      img: 'imgs/torno-jaula-1.webp',
+      dims: [
+        ['Largo (L)', '1400 mm'],
+        ['Ancho (W)', '1395 mm'],
+        ['Alto (H)', '2220 mm'],
+        ['Ancho de paso útil', '580 mm'],
+        ['Footprint en suelo', '1400 × 1395 mm'],
+        ['Alimentación', 'AC 100–120 V / 200–240 V · 50/60 Hz'],
+        ['Temperatura de trabajo', '−28 °C a 60 °C'],
+        ['Humedad de trabajo', '0 % – 95 %'],
+        ['Entorno', 'Interior / Exterior cubierto'],
+        ['Velocidad RFID', 'Máx. 30 personas/min'],
+        ['Velocidad huella', 'Máx. 25 personas/min'],
+        ['Velocidad facial', 'Máx. 15 personas/min'],
+        ['Velocidad vein', 'Máx. 15 personas/min'],
+        ['Material chasis', 'Acero inox SUS304'],
+        ['Material barreras', 'Acero inox SUS304'],
+        ['Movimiento barreras', 'Rotativo'],
+        ['Indicador LED', 'Sí'],
+        ['Modo emergencia', 'Sí'],
+        ['Nivel de seguridad', 'Alto'],
+        ['MCBF', '2 millones de ciclos'],
+        ['Protección IP', 'IP54'],
+        ['Dimensiones embalaje', '1975×1085×935 & 2100×1435×735 mm']
+      ],
+      legend: 'Torno full-height anti-tailgating para zonas desatendidas 24/7. Compatible con múltiples tecnologías biométricas (RFID, huella, facial, vein). Apto para exterior cubierto gracias a su acabado SUS304 e IP54.'
+    },
+    'controladora': {
+      title: 'Controladora de tornos',
+      img: 'imgs/foto controladora.webp',
+      dims: [
+        ['SKU', '70001304'],
+        ['Función', 'Control electrónico del torno'],
+        ['Compatibilidad', 'Lectores RFID, QR y biometría externos'],
+        ['Conexión típica', 'Wiegand / RS485'],
+        ['Necesario cuando', 'El lector no incorpora controladora propia (p. ej. QR600)']
+      ],
+      legend: ''
+    },
+    'faceid': {
+      title: 'Lector Face-ID multimodal (SpeedFace)',
+      img: 'imgs/foto speedface.webp',
+      dims: [
+        ['Display', '5" Touch LCD'],
+        ['Sistema operativo', 'Linux'],
+        ['Cámara', '2 MP WDR Low Light · LED ajustable'],
+        ['Memoria', '1 GB RAM / 8 GB Flash'],
+        ['Capacidad facial (1:N)', '6.000'],
+        ['Capacidad huella', '6.000 (según variante)'],
+        ['Capacidad palma', '3.000'],
+        ['Capacidad RFID', '10.000'],
+        ['Capacidad transacciones', '200.000'],
+        ['Distancia de reconocimiento', '0,3 – 3 m'],
+        ['Comunicación', 'TCP/IP · Wi-Fi · Wiegand I/O · RS485 · RS232'],
+        ['RFID estándar', '125 kHz EM · 13.56 MHz Mifare · módulo dual'],
+        ['Alimentación', '12 V DC · 3 A (opcional)'],
+        ['Funciones', 'ADMS · T9 Input · DST · ID 9 dígitos · niveles de acceso · anti-passback · alarma tamper'],
+        ['Control de acceso avanzado', 'Cerradura · sensor · alarma · botón de salida · aux input']
+      ],
+      legend: 'Terminal multimodal con reconocimiento facial, huella, palma y RFID. Recomendado como lector principal en accesos atendidos sin necesidad de controladora adicional.'
+    },
+    'qr600': {
+      title: 'Lector RFID + QR para torno · QR600',
+      img: 'imgs/foto lector qr.webp',
+      dims: [
+        ['Carcasa', 'Metal resistente · waterproof'],
+        ['Protección IP', 'IP65'],
+        ['Tipos de QR', 'QR · PDF417 · Data Matrix · MicroPDF417 · Aztec'],
+        ['QR dinámico', 'Compatible ZKBioSecurity Mobile APP y Atlas Series'],
+        ['Comunicación', 'Wiegand y RS485'],
+        ['RFID soportado', '125 kHz ID · 13.56 MHz IC'],
+        ['Variantes', 'QR600 (estándar) · QR600-HK · QR600-VK (con teclado)'],
+        ['Integración', 'ZKBio Security y Atlas Series']
+      ],
+      legend: 'Lector exterior IP65 ideal para tornos. Soporta tarjetas RFID, códigos QR estáticos y QR dinámico desde app móvil. Requiere controladora externa.'
+    },
+    'sbt200s': {
+      title: 'Portillo swing SBT200S-B',
+      img: 'imgs/foto portillo.webp',
+      dims: [
+        ['Largo (L)', '202 mm'],
+        ['Ancho (W)', '187 mm'],
+        ['Alto (H)', '1109 mm'],
+        ['Ancho de paso (lane)', '800 mm'],
+        ['Peso', '24 kg'],
+        ['Alimentación', 'AC 110 V / 220 V · 50/60 Hz'],
+        ['Sensor infrarrojo', 'Sí'],
+        ['Indicador LED', 'Sí'],
+        ['Material chasis', 'Chapa laminada en frío (opc. SUS304)'],
+        ['Material tapa', 'Acrílico'],
+        ['Material barreras', 'Cristal templado (opc. inox o acrílico)'],
+        ['Movimiento barreras', 'Swing'],
+        ['Modo emergencia', 'Sí'],
+        ['Temperatura de trabajo', '−15 °C a 60 °C'],
+        ['Humedad de trabajo', '20 % – 93 % (no condensante)'],
+        ['Entorno', 'Interior / Exterior cubierto'],
+        ['Dimensiones embalaje', '280 × 280 × 1160 mm'],
+        ['Peso con embalaje', '41 kg']
+      ],
+      legend: 'Portillo motorizado bidireccional con barreras swing. Paso de 800 mm apto PMR y movilidad reducida. Lector y controladora se piden por separado.'
+    },
+    'jaula-2': {
+      title: 'Torno de jaula full-height · 2 pasos',
+      img: 'imgs/torno-jaula-2.png',
+      dims: [
+        ['Largo (L)', '1400 mm'],
+        ['Ancho (W) · doble', '≈ 2790 mm'],
+        ['Alto (H)', '2220 mm'],
+        ['Ancho de paso útil por carril', '580 mm'],
+        ['Nº de carriles', '2'],
+        ['Alimentación', 'AC 100–120 V / 200–240 V · 50/60 Hz'],
+        ['Temperatura de trabajo', '−28 °C a 60 °C'],
+        ['Humedad de trabajo', '0 % – 95 %'],
+        ['Entorno', 'Interior / Exterior cubierto'],
+        ['Velocidad RFID por carril', 'Máx. 30 personas/min'],
+        ['Velocidad huella por carril', 'Máx. 25 personas/min'],
+        ['Velocidad facial por carril', 'Máx. 15 personas/min'],
+        ['Velocidad vein por carril', 'Máx. 15 personas/min'],
+        ['Material chasis', 'Acero inox SUS304'],
+        ['Material barreras', 'Acero inox SUS304'],
+        ['Movimiento barreras', 'Rotativo'],
+        ['Indicador LED', 'Sí'],
+        ['Modo emergencia', 'Sí'],
+        ['Nivel de seguridad', 'Alto'],
+        ['MCBF', '2 millones de ciclos por carril'],
+        ['Protección IP', 'IP54']
+      ],
+      legend: 'Versión doble del torno full-height. Misma electrónica, materiales y vida útil por carril. Pensado para puntos de acceso con mayor afluencia o flujo bidireccional simultáneo en régimen 24/7.'
+    }
+  };
+
+  function catLb(id) {
+    const p = CAT_PRODUCTS[id];
+    if (!p) return;
+    document.getElementById('cat-lb-title').textContent = p.title;
+    const stage = document.getElementById('cat-lb-stage');
+    if (p.img2) {
+      stage.innerHTML = `<div class="cat-stage-imgs"><img src="${p.img}" alt=""><img src="${p.img2}" alt=""></div>`;
+    } else {
+      stage.innerHTML = `<img class="cat-stage-img" src="${p.img}" alt="">`;
+    }
+    const dims = document.getElementById('cat-lb-dims');
+    dims.innerHTML = p.dims.map(([k,v]) => `<div class="cat-dim-row"><strong>${k}</strong><span>${v}</span></div>`).join('');
+    const legendEl = document.getElementById('cat-lb-legend');
+    legendEl.textContent = p.legend || '';
+    legendEl.style.display = p.legend ? '' : 'none';
+    document.getElementById('cat-lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function catLbClose() {
+    document.getElementById('cat-lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function catLbBg(e) {
+    if (e.target.id === 'cat-lightbox') catLbClose();
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') catLbClose();
+  });
+</script>
+</body>
+</html>
